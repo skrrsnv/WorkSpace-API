@@ -2,9 +2,12 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+RUN pip install poetry
 
-RUN pip install --no-cache-dir -r requirements.txt
+COPY pyproject.toml poetry.lock ./
+COPY README.md ./
+
+RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi
 
 COPY . .
 

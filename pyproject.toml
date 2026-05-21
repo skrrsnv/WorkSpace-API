@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "workspace"
+version = "0.1.0"
+description = ""
+authors = ["Askar"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^6.0.5"
+djangorestframework = "^3.17.1"
+psycopg2-binary = "^2.9.12"
+djangorestframework-simplejwt = "^5.5.1"
+drf-spectacular = "^0.29.0"
+django-filter = "^25.2"
+python-dotenv = "^1.2.2"
+djoser = "^2.3.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
