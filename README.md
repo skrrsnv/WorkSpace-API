@@ -26,6 +26,7 @@ A backend API for team and project management built with Django REST Framework.
 * Docker
 * Simple JWT
 * drf-spectacular
+* Poetry
 
 ---
 
@@ -118,6 +119,37 @@ docker compose up
 ```bash
 docker compose exec web python manage.py migrate
 ```
+
+### Create Superuser
+
+```bash
+docker compose exec web python manage.py createsuperuser
+```
+
+---
+
+## Local Development with Poetry
+
+### Install Dependencies
+
+```bash
+poetry install
+```
+
+### Activate Shell
+
+```bash
+poetry shell
+#or
+poetry env activate
+```
+
+### Run Server
+
+```bash
+python manage.py runserver
+```
+
 
 ### Create Superuser
 
