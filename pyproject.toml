@@ -16,6 +16,8 @@ drf-spectacular = "^0.29.0"
 django-filter = "^25.2"
 python-dotenv = "^1.2.2"
 djoser = "^2.3.3"
+celery = "^5.6.3"
+redis = "^7.4.0"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,6 +1,8 @@
 # WorkSpace API
 
-A backend API for team and project management built with Django REST Framework.
+A backend API for team and project management built with Django REST Framework
+
+---
 
 ## Features
 
@@ -11,9 +13,10 @@ A backend API for team and project management built with Django REST Framework.
 * Membership System
 * Task Management
 * Filtering, Searching, and Ordering
-* Swagger API Documentation
+* Swagger / ReDoc API Documentation
 * Dockerized Environment
 * PostgreSQL Database
+* Asynchronous tasks with Celery + Redis
 
 ---
 
@@ -23,10 +26,24 @@ A backend API for team and project management built with Django REST Framework.
 * Django
 * Django REST Framework
 * PostgreSQL
-* Docker
+* Redis
+* Celery
+* Docker & Docker Compose
 * Simple JWT
 * drf-spectacular
 * Poetry
+
+---
+
+## Async Tasks
+
+The project uses Celery for background task processing.
+
+### Features:
+
+* Asynchronous task execution
+* Redis as message broker
+* Scalable task queue system
 
 ---
 
@@ -96,6 +113,9 @@ DB_USER=workspace_user
 DB_PASSWORD=workspace_password
 DB_HOST=db
 DB_PORT=5432
+
+CELERY_BROKER_URL=redis://redis:6379/0
+CELERY_RESULT_BACKEND=redis://redis:6379/0
 ```
 
 ---
@@ -126,6 +146,12 @@ docker compose exec web python manage.py migrate
 docker compose exec web python manage.py createsuperuser
 ```
 
+### Run Celery Worker
+
+```bash
+docker compose exec web celery -A config worker -l info
+```
+
 ---
 
 ## Local Development with Poetry
@@ -140,21 +166,12 @@ poetry install
 
 ```bash
 poetry shell
-#or
-poetry env activate
 ```
 
 ### Run Server
 
 ```bash
 python manage.py runserver
-```
-
-
-### Create Superuser
-
-```bash
-docker compose exec web python manage.py createsuperuser
 ```
 
 ---
@@ -231,9 +248,10 @@ DELETE  /api/v1/projects/{project_id}/tasks/{id}/
 
 * Automated Tests
 * Comments System
-* Activity Logs
+* Activity Logs (Celery-based)
 * File Uploads
-* Notifications
+* Notifications (async processing)
 * Frontend Integration
 * CI/CD Pipeline
+* Redis caching layer
 

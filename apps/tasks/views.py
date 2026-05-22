@@ -9,6 +9,7 @@ from apps.projects.permissions import IsProjectMember
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
+from .tasks import test_task
 
 
 class TaskListPagination(PageNumberPagination):
@@ -25,6 +26,8 @@ class TaskListCreate(generics.ListCreateAPIView):
     search_fields = ['title', 'description']
     ordering_fields = ['created_at', 'due_date']
     ordering = ['-created_at']
+    test_task.delay()
+    
     
     
     def get_queryset(self):
