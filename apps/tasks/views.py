@@ -9,7 +9,7 @@ from apps.projects.permissions import IsProjectMember
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from .tasks import test_task
+from apps.activity_logs.tasks import create_activity_log
 
 
 class TaskListPagination(PageNumberPagination):
@@ -26,8 +26,6 @@ class TaskListCreate(generics.ListCreateAPIView):
     search_fields = ['title', 'description']
     ordering_fields = ['created_at', 'due_date']
     ordering = ['-created_at']
-    test_task.delay()
-    
     
     
     def get_queryset(self):
@@ -42,7 +40,16 @@ class TaskListCreate(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         project_id = self.kwargs['project_id']
         project = get_object_or_404(Project, id=project_id, memberships__user=self.request.user)
-        serializer.save(project=project)
+        task = serializer.save(project=project)
+        
+        create_activity_log.delay(self.request.user.id,
+            "CREATE_TASK",
+            {
+                "task_id": task.id,
+                "task_title": task.title,
+                "project_id": project.id,
+                "project_title": project.title
+            })
     
     
 class TaskRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
@@ -58,3 +65,29 @@ class TaskRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
         context['project'] = project
         return context
     
+    def perform_update(self, serializer):
+        task = serializer.save()
+        create_activity_log.delay(self.request.user.id,
+            "UPDATE_TASK",
+            {
+                "task_id": task.id,
+                "task_title": task.title,
+                "project_id": task.project.id,
+                "project_title": task.project.title
+            })
+        
+    def perform_destroy(self, instance):
+        task_title = instance.title
+        task_id = instance.id
+        project_id = instance.project.id
+        project_title = instance.project.title
+        instance.delete()
+
+        create_activity_log.delay(self.request.user.id,
+            "DELETE_TASK",
+            {
+                "task_id": task_id,
+                "task_title": task_title,
+                "project_id": project_id,
+                "project_title": project_title
+            })

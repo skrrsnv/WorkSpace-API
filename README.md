@@ -1,6 +1,6 @@
 # WorkSpace API
 
-A backend API for team and project management built with Django REST Framework
+A backend API for team and project management built with Django REST Framework.
 
 ---
 
@@ -12,11 +12,12 @@ A backend API for team and project management built with Django REST Framework
 * Role-based Permissions
 * Membership System
 * Task Management
+* Activity Logs
 * Filtering, Searching, and Ordering
 * Swagger / ReDoc API Documentation
 * Dockerized Environment
 * PostgreSQL Database
-* Asynchronous tasks with Celery + Redis
+* Asynchronous Tasks with Celery + Redis
 
 ---
 
@@ -29,21 +30,33 @@ A backend API for team and project management built with Django REST Framework
 * Redis
 * Celery
 * Docker & Docker Compose
+* Poetry
 * Simple JWT
 * drf-spectacular
-* Poetry
+* django-filter
 
 ---
 
-## Async Tasks
+## Async Tasks & Activity Logs
 
-The project uses Celery for background task processing.
+The project uses Celery and Redis for asynchronous background processing.
 
-### Features:
+### Implemented async features
 
-* Asynchronous task execution
+* Activity log creation
+* Background task execution
 * Redis as message broker
-* Scalable task queue system
+* Scalable task queue architecture
+
+### Example logged events
+
+* Project creation
+* Project update
+* Project deletion
+* Task creation
+* Task update
+* Membership creation
+* Membership role updates
 
 ---
 
@@ -55,21 +68,23 @@ The system supports three project roles:
 * Admin
 * Member
 
-### Permissions
+---
 
-#### Owner
+## Permissions
+
+### Owner
 
 * Full project access
 * Can delete projects
 * Can manage memberships
-* Can update tasks
+* Can update and delete tasks
 
-#### Admin
+### Admin
 
 * Can manage memberships
 * Can update tasks
 
-#### Member
+### Member
 
 * Can view project data
 * Can create tasks
@@ -80,8 +95,10 @@ The system supports three project roles:
 
 ```text
 apps/
+├── activity_logs/
 ├── projects/
 ├── tasks/
+├── users/
 
 config/
 ```
@@ -146,11 +163,7 @@ docker compose exec web python manage.py migrate
 docker compose exec web python manage.py createsuperuser
 ```
 
-### Run Celery Worker
-
-```bash
-docker compose exec web celery -A config worker -l info
-```
+Celery worker runs automatically as a separate Docker service.
 
 ---
 
@@ -178,13 +191,13 @@ python manage.py runserver
 
 ## API Documentation
 
-Swagger UI:
+### Swagger UI
 
 ```text
 http://127.0.0.1:8000/api/schema/swagger-ui/
 ```
 
-ReDoc:
+### ReDoc
 
 ```text
 http://127.0.0.1:8000/api/redoc/
@@ -242,16 +255,37 @@ PUT     /api/v1/projects/{project_id}/tasks/{id}/
 DELETE  /api/v1/projects/{project_id}/tasks/{id}/
 ```
 
+### Activity Logs
+
+```text
+GET     /api/v1/activity-logs/
+GET     /api/v1/activity-logs/{id}/
+```
+
+---
+
+## Filtering, Searching, Ordering
+
+Implemented with `django-filter`.
+
+### Examples
+
+```text
+/api/v1/tasks/?status=todo
+/api/v1/tasks/?search=backend
+/api/v1/tasks/?ordering=created_at
+```
+
 ---
 
 ## Future Improvements
 
 * Automated Tests
 * Comments System
-* Activity Logs (Celery-based)
+* Notifications
 * File Uploads
-* Notifications (async processing)
+* Redis Caching Layer
+* WebSockets
 * Frontend Integration
 * CI/CD Pipeline
-* Redis caching layer
-
+* Production Deployment

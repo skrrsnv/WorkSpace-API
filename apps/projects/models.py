@@ -23,5 +23,9 @@ class Membership(models.Model):
     role = models.CharField(max_length=20, choices=RoleChoices.choices, default=RoleChoices.member)
     created_at = models.DateTimeField(auto_now_add=True)
     
+    def __str__(self):
+        return f'Project: {self.project.title} | User: {self.user.username} | Role: {self.role}'
+    
     class Meta:
         unique_together = ('project', 'user')
+        
