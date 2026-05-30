@@ -6,34 +6,36 @@ A backend API for team and project management built with Django REST Framework.
 
 ## Features
 
-* JWT Authentication
-* Custom User Model
-* Project Management
-* Role-based Permissions
-* Membership System
-* Task Management
-* Activity Logs
-* Filtering, Searching, and Ordering
-* Swagger / ReDoc API Documentation
-* Dockerized Environment
-* PostgreSQL Database
-* Asynchronous Tasks with Celery + Redis
+- JWT Authentication
+- Custom User Model
+- Project Management
+- Role-based Permissions (Owner / Admin / Member)
+- Membership System
+- Task Management
+- Activity Logs (async via Celery)
+- Filtering, Searching, and Ordering
+- Swagger / ReDoc API Documentation
+- Dockerized Environment
+- PostgreSQL Database
+- Asynchronous Tasks with Celery + Redis
+- Automated API Tests (pytest + DRF APIClient)
 
 ---
 
 ## Tech Stack
 
-* Python
-* Django
-* Django REST Framework
-* PostgreSQL
-* Redis
-* Celery
-* Docker & Docker Compose
-* Poetry
-* Simple JWT
-* drf-spectacular
-* django-filter
+- Python
+- Django
+- Django REST Framework
+- PostgreSQL
+- Redis
+- Celery
+- Docker & Docker Compose
+- Poetry
+- Simple JWT
+- drf-spectacular
+- django-filter
+- pytest
 
 ---
 
@@ -41,32 +43,53 @@ A backend API for team and project management built with Django REST Framework.
 
 The project uses Celery and Redis for asynchronous background processing.
 
-### Implemented async features
+### Implemented async features:
 
-* Activity log creation
-* Background task execution
-* Redis as message broker
-* Scalable task queue architecture
+- Activity log creation via Celery tasks
+- Background task execution
+- Redis as message broker
+- Scalable task queue architecture
 
-### Example logged events
+### Logged events:
 
-* Project creation
-* Project update
-* Project deletion
-* Task creation
-* Task update
-* Membership creation
-* Membership role updates
+- Project creation
+- Project update
+- Project deletion
+- Task creation
+- Task update
+- Membership creation
+- Membership role updates
+
+---
+
+## Testing
+
+The project includes **API-level integration tests** using pytest and DRF test client.
+
+### Covered scenarios:
+
+- Unauthorized access protection (401)
+- Project creation via API
+- Role-based permissions (403 checks)
+- Task CRUD operations via API
+- Membership restrictions
+- Activity log creation validation (Celery eager mode)
+
+### Testing stack:
+
+- pytest
+- pytest-django
+- Django test database
+- DRF APIClient
+- Celery eager mode for async testing
 
 ---
 
 ## Roles
 
-The system supports three project roles:
-
-* Owner
-* Admin
-* Member
+- Owner
+- Admin
+- Member
 
 ---
 
@@ -74,20 +97,20 @@ The system supports three project roles:
 
 ### Owner
 
-* Full project access
-* Can delete projects
-* Can manage memberships
-* Can update and delete tasks
+- Full project access
+- Can delete projects
+- Can manage memberships
+- Can update and delete tasks
 
 ### Admin
 
-* Can manage memberships
-* Can update tasks
+- Can manage memberships
+- Can update tasks
 
 ### Member
 
-* Can view project data
-* Can create tasks
+- Can view project data
+- Can create tasks
 
 ---
 
@@ -101,7 +124,7 @@ apps/
 ├── users/
 
 config/
-```
+````
 
 ---
 
@@ -118,7 +141,7 @@ cd WorkSpace
 
 ## Environment Variables
 
-Create a `.env` file in the root directory:
+Create a `.env` file:
 
 ```env
 DEBUG=True
@@ -139,51 +162,39 @@ CELERY_RESULT_BACKEND=redis://redis:6379/0
 
 ## Run with Docker
 
-### Build Containers
+### Build
 
 ```bash
 docker compose build
 ```
 
-### Start Project
+### Start
 
 ```bash
 docker compose up
 ```
 
-### Apply Migrations
+### Migrations
 
 ```bash
 docker compose exec web python manage.py migrate
 ```
 
-### Create Superuser
+### Superuser
 
 ```bash
 docker compose exec web python manage.py createsuperuser
 ```
 
-Celery worker runs automatically as a separate Docker service.
+Celery worker runs as a separate Docker service.
 
 ---
 
-## Local Development with Poetry
-
-### Install Dependencies
+## Local Development (Poetry)
 
 ```bash
 poetry install
-```
-
-### Activate Shell
-
-```bash
 poetry shell
-```
-
-### Run Server
-
-```bash
 python manage.py runserver
 ```
 
@@ -191,43 +202,33 @@ python manage.py runserver
 
 ## API Documentation
 
-### Swagger UI
+### Swagger
 
-```text
-http://127.0.0.1:8000/api/schema/swagger-ui/
-```
+[http://127.0.0.1:8000/api/schema/swagger-ui/](http://127.0.0.1:8000/api/schema/swagger-ui/)
 
 ### ReDoc
 
-```text
-http://127.0.0.1:8000/api/redoc/
-```
+[http://127.0.0.1:8000/api/redoc/](http://127.0.0.1:8000/api/redoc/)
 
 ---
 
 ## Authentication
 
-JWT authentication is used.
-
 ### Obtain Token
 
-```text
 POST /api/v1/token/
-```
 
 ### Refresh Token
 
-```text
 POST /api/v1/token/refresh/
-```
 
 ---
 
-## Main Endpoints
+## Endpoints
 
 ### Projects
 
-```text
+```
 GET     /api/v1/projects/
 POST    /api/v1/projects/
 GET     /api/v1/projects/{id}/
@@ -237,7 +238,7 @@ DELETE  /api/v1/projects/{id}/
 
 ### Memberships
 
-```text
+```
 GET     /api/v1/projects/{project_id}/membership/
 POST    /api/v1/projects/{project_id}/membership/
 GET     /api/v1/projects/{project_id}/membership/{id}/
@@ -247,7 +248,7 @@ DELETE  /api/v1/projects/{project_id}/membership/{id}/
 
 ### Tasks
 
-```text
+```
 GET     /api/v1/projects/{project_id}/tasks/
 POST    /api/v1/projects/{project_id}/tasks/
 GET     /api/v1/projects/{project_id}/tasks/{id}/
@@ -257,20 +258,18 @@ DELETE  /api/v1/projects/{project_id}/tasks/{id}/
 
 ### Activity Logs
 
-```text
+```
 GET     /api/v1/activity-logs/
 GET     /api/v1/activity-logs/{id}/
 ```
 
 ---
 
-## Filtering, Searching, Ordering
+## Filtering / Search / Ordering
 
-Implemented with `django-filter`.
+Examples:
 
-### Examples
-
-```text
+```
 /api/v1/tasks/?status=todo
 /api/v1/tasks/?search=backend
 /api/v1/tasks/?ordering=created_at
@@ -280,12 +279,13 @@ Implemented with `django-filter`.
 
 ## Future Improvements
 
-* Automated Tests
-* Comments System
+* Comments system
 * Notifications
-* File Uploads
-* Redis Caching Layer
+* File upload system
+* Redis caching layer
 * WebSockets
-* Frontend Integration
-* CI/CD Pipeline
-* Production Deployment
+* CI/CD pipeline
+* Production deployment
+* Frontend integration
+
+
