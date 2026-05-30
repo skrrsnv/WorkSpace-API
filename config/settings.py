@@ -121,6 +121,11 @@ AUTH_PASSWORD_VALIDATORS = [
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 
+# #For activity logs test
+# CELERY_TASK_ALWAYS_EAGER = True
+# CELERY_TASK_EAGER_PROPAGATES = True
+
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
